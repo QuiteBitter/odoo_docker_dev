@@ -66,9 +66,9 @@ Before starting, ensure you have the following installed:
 For local testing, add the following entries to your hosts file:
 
 - **Linux/Mac:** Edit `/etc/hosts` (with sudo):
+
   ```
   sudo nano /etc/hosts
-
 -127.0.0.1 odoo17.local
 
 -127.0.0.1 odoo18.local
