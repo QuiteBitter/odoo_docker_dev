@@ -1,7 +1,7 @@
 # Odoo Development Environment with Docker
 
-This repository provides a Docker Compose-based environment to run and develop against two versions of Odoo – **Odoo 17
-** and **Odoo 18** – on your local machine. It also includes a separate PostgreSQL container for the database and an
+This repository provides a Docker Compose-based environment to run and develop against two versions of Odoo – **Odoo 17** 
+and **Odoo 18** – on your local machine. It also includes a separate PostgreSQL container for the database and an
 Nginx reverse proxy to route requests to the correct Odoo instance. The setup uses persistent volumes to ensure that
 your data and custom addons persist across container restarts.
 
@@ -66,9 +66,9 @@ Before starting, ensure you have the following installed:
 For local testing, add the following entries to your hosts file:
 
 - **Linux/Mac:** Edit `/etc/hosts` (with sudo):
+
   ```
   sudo nano /etc/hosts
-
 -127.0.0.1 odoo17.local
 
 -127.0.0.1 odoo18.local
