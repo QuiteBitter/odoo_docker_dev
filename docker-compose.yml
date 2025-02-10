@@ -1,0 +1,72 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15            # PostgreSQL database image
+    container_name: odoo-db
+    environment:
+      POSTGRES_USER: odoo         # database user for Odoo
+      POSTGRES_PASSWORD: odoo     # database password
+      POSTGRES_DB: postgres       # default DB (Odoo will create its own DBs)
+    volumes:
+      - db-data:/var/lib/postgresql/data   # persist database files
+    networks:
+      - odoo-net
+
+  odoo17:
+    image: odoo:17.0              # Odoo 17 official image
+    container_name: odoo-17
+    depends_on:
+      - db
+    volumes:
+      - odoo17-data:/var/lib/odoo              # persist Odoo filestore data
+      - ./addons_odoo17:/mnt/extra-addons      # mount custom addons for Odoo 17
+      - ./config/odoo17.conf:/etc/odoo/odoo.conf   # Odoo 17 configuration
+    environment:
+      - PGHOST=db
+      - PGUSER=odoo
+      - PGPASSWORD=odoo
+      - PGDATABASE=postgres
+      # The above env vars are another way to configure DB, redundant if in odoo.conf
+      - ODOO_PROXY_MODE=True    # ensure proxy mode is enabled (alternative to config)
+    networks:
+      - odoo-net
+
+  odoo18:
+    image: odoo:18.0              # Odoo 18 official image
+    container_name: odoo-18
+    depends_on:
+      - db
+    volumes:
+      - odoo18-data:/var/lib/odoo              # persist Odoo filestore data
+      - ./addons_odoo18:/mnt/extra-addons      # mount custom addons for Odoo 18
+      - ./config/odoo18.conf:/etc/odoo/odoo.conf   # Odoo 18 configuration
+    environment:
+      - PGHOST=db
+      - PGUSER=odoo
+      - PGPASSWORD=odoo
+      - PGDATABASE=postgres
+      - ODOO_PROXY_MODE=True
+    networks:
+      - odoo-net
+
+  proxy:
+    image: nginx:latest           # Nginx for reverse proxy
+    container_name: odoo-proxy
+    depends_on:
+      - odoo17
+      - odoo18
+    ports:
+      - "80:80"                   # expose HTTP port
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf:ro  # custom nginx config
+    networks:
+      - odoo-net
+
+volumes:
+  db-data:
+  odoo17-data:
+  odoo18-data:
+
+networks:
+  odoo-net:
+    driver: bridge
